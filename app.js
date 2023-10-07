@@ -35,7 +35,18 @@ const flowPrincipal = addKeyword(['hola', 'ole', 'alo'])
         ],
         null,
         null,
-        []
+        [flowMensaje]
+    )
+
+const flowMensaje = addKeyword('hola')
+    .addAnswer(
+        'Aqui va un mensaje',
+        {
+            capture: true,
+        },
+        async (ctx, {provider}) => {
+            await provider.sendtext(17862968890, 'mensaje')
+        }
     )
 
 const main = async () => {
