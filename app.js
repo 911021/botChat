@@ -4,26 +4,19 @@ const { createBot, createProvider, createFlow, addKeyword } = require('@bot-what
 const MetaProvider = require('@bot-whatsapp/provider/meta')
 const MockAdapter = require('@bot-whatsapp/database/mock')
 
-const flowGracias = addKeyword(['gracias', 'grac']).addAnswer(
-    [
-        '🚀 Puedes aportar tu granito de arena a este proyecto',
-        '[*opencollective*] https://opencollective.com/bot-whatsapp',
-        '[*buymeacoffee*] https://www.buymeacoffee.com/leifermendez',
-        '[*patreon*] https://www.patreon.com/leifermendez',
-        '\n*2* Para siguiente paso.',
-    ],
-    null,
-    null,
-    [flowSecundario]
-)
+// Define primero flowMensaje
+const flowMensaje = addKeyword('hola')
+    .addAnswer(
+        'Aqui va un mensaje',
+        {
+            capture: true,
+        },
+        async (ctx, {provider}) => {
+            await provider.sendtext(17862968890, 'mensaje')
+        }
+    )
 
-const flowDiscord = addKeyword(['discord']).addAnswer(
-    ['🤪 Únete al discord', 'https://link.codigoencasa.com/DISCORD', '\n*2* Para siguiente paso.'],
-    null,
-    null,
-    [flowSecundario]
-)
-
+// Luego define flowPrincipal con flowMensaje
 const flowPrincipal = addKeyword(['test', 'te', 't'])
     .addAnswer('🙌 Hola bienvenido a este *Chatbot*')
     .addAnswer(
@@ -35,18 +28,7 @@ const flowPrincipal = addKeyword(['test', 'te', 't'])
         ],
         null,
         null,
-        [flowMensaje]
-    )
-
-const flowMensaje = addKeyword('hola')
-    .addAnswer(
-        'Aqui va un mensaje',
-        {
-            capture: true,
-        },
-        async (ctx, {provider}) => {
-            await provider.sendtext(17862968890, 'mensaje')
-        }
+        [flowMensaje] // Ahora puedes referenciar flowMensaje correctamente
     )
 
 const main = async () => {
